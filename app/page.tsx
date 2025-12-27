@@ -32,6 +32,111 @@ import SystemControls from '@/components/SystemControls';
 import SlotMachineSelector from '@/components/SlotMachineSelector';
 import EntryFlow from '@/components/EntryFlow';
 
+// Fake chatbot responses and suggestions
+interface ChatbotResponse {
+  keywords: string[];
+  response: string;
+  suggestions: string[];
+}
+
+const chatbotResponses: ChatbotResponse[] = [
+  {
+    keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon'],
+    response: "Hello! Welcome to HYPER CHAT Enterprise Support System v2003. I'm CHAD-BOT, your virtual assistant. How can I help you today?\n\nPlease select an option below or type your question.",
+    suggestions: ['What can you help me with?', 'I have a technical problem', 'Tell me about this system', 'I need account support']
+  },
+  {
+    keywords: ['help', 'what can you', 'options', 'menu', 'assist'],
+    response: "I can assist you with the following:\n\n• Account & Login Issues\n• Technical Support\n• System Information\n• General Inquiries\n• Password Reset\n• Report a Bug\n\nPlease select a topic or describe your issue.",
+    suggestions: ['Account issues', 'Technical support', 'System information', 'How do I reset my password?']
+  },
+  {
+    keywords: ['account', 'login', 'sign in', 'cannot access', 'locked'],
+    response: "I understand you're having account issues. Here are some common solutions:\n\n1. Make sure CAPS LOCK is off\n2. Clear your browser cache and cookies\n3. Try a different browser\n4. Wait 15 minutes if locked out\n\nIf the problem persists, please contact your system administrator at ext. 4567.",
+    suggestions: ['My account is locked', 'I forgot my password', 'Create new account', 'Talk to human agent']
+  },
+  {
+    keywords: ['password', 'forgot', 'reset', 'change password'],
+    response: "To reset your password:\n\n1. Click 'Forgot Password' on the login page\n2. Enter your employee ID\n3. Check your company email for reset link\n4. Link expires in 24 hours\n\n⚠️ Note: Passwords must be 8+ characters with uppercase, lowercase, and numbers.\n\nNeed further assistance?",
+    suggestions: ['I didn\'t receive the email', 'My employee ID doesn\'t work', 'What are password requirements?', 'Back to main menu']
+  },
+  {
+    keywords: ['technical', 'problem', 'issue', 'error', 'bug', 'not working', 'broken'],
+    response: "I'm sorry to hear you're experiencing technical difficulties. To help diagnose the issue:\n\n• What error message are you seeing?\n• When did the problem start?\n• Have you tried restarting your browser?\n\nCommon fixes: Clear cache, disable extensions, try incognito mode.",
+    suggestions: ['Page won\'t load', 'Getting error message', 'Feature not working', 'It\'s very slow']
+  },
+  {
+    keywords: ['slow', 'loading', 'performance', 'speed', 'takes forever'],
+    response: "Performance issues can be caused by:\n\n• High server load (check status panel)\n• Network connectivity issues\n• Browser cache overflow\n• Too many open tabs\n\nRecommended: Clear browser cache and restart. Current server status: ✓ ONLINE\n\nDid this help resolve your issue?",
+    suggestions: ['Yes, it\'s working now', 'Still having problems', 'Check server status', 'Contact IT support']
+  },
+  {
+    keywords: ['error', 'message', '404', '500', 'failed'],
+    response: "Error messages indicate something went wrong. Common errors:\n\n• 404: Page not found - check URL\n• 500: Server error - try again later\n• 403: Access denied - check permissions\n• Timeout: Network issue - refresh page\n\nPlease describe the exact error you're seeing.",
+    suggestions: ['I see error 404', 'Server error 500', 'Access denied', 'Connection timeout']
+  },
+  {
+    keywords: ['system', 'information', 'about', 'version', 'what is this'],
+    response: "HYPER CHAT Enterprise v2003.12.25\n\n━━━━━━━━━━━━━━━━━━━━━━━\n• Platform: Enterprise AI Assistant\n• Version: 2003.12.25.rev.4521\n• Server: APAC-TOKYO-03\n• Status: Operational\n• Uptime: 99.7%\n━━━━━━━━━━━━━━━━━━━━━━━\n\n© 2003 HYPER CHAT Corporation",
+    suggestions: ['What features are available?', 'System requirements', 'Privacy policy', 'Back to main menu']
+  },
+  {
+    keywords: ['feature', 'features', 'what can', 'capabilities', 'do you do'],
+    response: "HYPER CHAT Enterprise Features:\n\n✓ AI-Powered Conversations\n✓ Multi-language Support\n✓ Conversation History\n✓ Secure Encryption\n✓ 24/7 Availability\n✓ Enterprise Integration\n\nNote: Some features may require additional licensing.",
+    suggestions: ['How do I use AI chat?', 'Is my data secure?', 'Pricing information', 'Request demo']
+  },
+  {
+    keywords: ['secure', 'security', 'privacy', 'data', 'safe', 'encrypted'],
+    response: "Security Information:\n\n🔒 All connections are TLS 1.3 encrypted\n🔒 Data stored in ISO 27001 certified facilities\n🔒 SOC 2 Type II compliant\n🔒 GDPR compliant\n🔒 Sessions auto-expire after 30 minutes\n\nYour privacy is our priority.",
+    suggestions: ['Where is my data stored?', 'Can I delete my data?', 'View privacy policy', 'Security certifications']
+  },
+  {
+    keywords: ['human', 'agent', 'person', 'real', 'operator', 'talk to someone', 'support'],
+    response: "I understand you'd like to speak with a human agent.\n\n📞 Phone Support: 0120-XXX-XXXX (9:00-18:00 JST)\n📧 Email: support@hyper-chat.local\n💬 Live Chat: Currently unavailable\n\nExpected wait time: ~15 minutes\n\nWould you like me to try to help first?",
+    suggestions: ['Yes, I\'ll try chatbot first', 'Schedule a callback', 'Send email instead', 'View support hours']
+  },
+  {
+    keywords: ['thank', 'thanks', 'resolved', 'working', 'fixed', 'great', 'awesome'],
+    response: "You're welcome! I'm glad I could help! 🎉\n\nBefore you go:\n• Rate this conversation (optional)\n• Bookmark our FAQ page\n• Check out new features\n\nIs there anything else I can assist you with today?",
+    suggestions: ['No, that\'s all', 'I have another question', 'Rate this chat', 'View FAQ']
+  },
+  {
+    keywords: ['bye', 'goodbye', 'exit', 'close', 'done', 'no thanks', 'that\'s all'],
+    response: "Thank you for using HYPER CHAT Enterprise Support!\n\n━━━━━━━━━━━━━━━━━━━━━━━\nSession Summary:\n• Chat ID: HC-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "\n• Duration: This session\n• Status: Resolved\n━━━━━━━━━━━━━━━━━━━━━━━\n\nHave a great day! またのご利用をお待ちしております。",
+    suggestions: ['Start new conversation', 'Rate this chat', 'View chat history', 'Return to dashboard']
+  },
+  {
+    keywords: ['pricing', 'cost', 'price', 'subscription', 'license', 'buy', 'purchase'],
+    response: "HYPER CHAT Enterprise Pricing:\n\n📦 Basic: ¥9,800/month\n   - 5 users, 10k messages\n\n📦 Professional: ¥29,800/month\n   - 25 users, unlimited messages\n\n📦 Enterprise: Contact sales\n   - Unlimited everything\n\nAll plans include 14-day free trial.",
+    suggestions: ['Start free trial', 'Contact sales', 'Compare plans', 'Back to main menu']
+  },
+  {
+    keywords: ['weather', 'time', 'date', 'joke', 'fun'],
+    response: "Ha! While I appreciate the casual conversation, I'm primarily designed for enterprise support. 😄\n\nBut since you asked... \n🌤️ Weather: Check your local forecast\n🕐 Time: Look at your taskbar\n😂 Joke: Why did the chatbot go to therapy? Too many mixed messages!\n\nNow, how can I really help you?",
+    suggestions: ['Tell me another joke', 'Okay, I need real help', 'What can you actually do?', 'Back to main menu']
+  }
+];
+
+const defaultResponse: ChatbotResponse = {
+  keywords: [],
+  response: "I'm not quite sure I understand your question. Let me try to help!\n\nCould you please:\n• Rephrase your question\n• Select from the options below\n• Or type 'help' to see what I can assist with\n\nI'm still learning, so your patience is appreciated! 🤖",
+  suggestions: ['Show me the main menu', 'I need technical help', 'Talk to human agent', 'What can you help with?']
+};
+
+const getRandomTypingDelay = () => Math.floor(Math.random() * 1500) + 1000;
+
+const findBestResponse = (input: string): ChatbotResponse => {
+  const lowerInput = input.toLowerCase();
+
+  for (const response of chatbotResponses) {
+    if (response.keywords.some(keyword => lowerInput.includes(keyword))) {
+      return response;
+    }
+  }
+
+  return defaultResponse;
+};
+
 // Popup component
 function JRPopup({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
   return (
@@ -62,14 +167,18 @@ export default function Home() {
   const [entryComplete, setEntryComplete] = useState(false);
   const [showFirstChatPopup, setShowFirstChatPopup] = useState(false);
   const [hasShownFirstChat, setHasShownFirstChat] = useState(false);
+  const [showCookieBanner, setShowCookieBanner] = useState(true);
+  const [showPasswordSaver, setShowPasswordSaver] = useState(true);
+  const [currentSuggestions, setCurrentSuggestions] = useState<string[]>([
+    'Hello!', 'I need help', 'What can you do?', 'Technical support'
+  ]);
 
   // Load data from localStorage on mount
   useEffect(() => {
     setMounted(true);
 
-    // Check if already logged in this session
-    const isLoggedIn = sessionStorage.getItem('hyper-chat-logged-in') === 'true';
-    setEntryComplete(isLoggedIn);
+    // Always start with entry flow on refresh
+    setEntryComplete(false);
 
     const savedConversations = getConversations();
     const savedSettings = getSettings();
@@ -166,101 +275,58 @@ export default function Home() {
       prev.map((c) => (c.id === convId ? updatedConv : c))
     );
 
-    // Start generating
+    // Start "generating" (fake typing delay)
     setIsGenerating(true);
     setStreamingContent('');
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: updatedConv.messages.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-          model: settings.model,
-          temperature: settings.temperature,
-        }),
-      });
+    // Get chatbot response
+    const chatbotResponse = findBestResponse(content);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || `HTTP ${response.status}`);
-      }
+    // Simulate typing with streaming effect
+    const typingDelay = getRandomTypingDelay();
+    const responseText = chatbotResponse.response;
 
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No response body');
+    // Show typing indicator first
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      const decoder = new TextDecoder();
-      let fullContent = '';
+    // Simulate character-by-character streaming
+    let currentText = '';
+    const charsPerTick = 3;
+    const tickDelay = 30;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.content) {
-                fullContent += parsed.content;
-                setStreamingContent(fullContent);
-              }
-            } catch {
-              // Skip invalid JSON
-            }
-          }
-        }
-      }
-
-      // Add assistant message
-      const assistantMessage: Message = {
-        id: generateId(),
-        role: 'assistant',
-        content: fullContent,
-        timestamp: Date.now(),
-      };
-
-      const finalConv: Conversation = {
-        ...updatedConv,
-        messages: [...updatedConv.messages, assistantMessage],
-      };
-
-      updateConversation(finalConv);
-      setConversations((prev) =>
-        prev.map((c) => (c.id === convId ? finalConv : c))
-      );
-    } catch (error) {
-      // Add error message
-      const errorMessage: Message = {
-        id: generateId(),
-        role: 'assistant',
-        content: `エラーが発生しました: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        timestamp: Date.now(),
-        isError: true,
-      };
-
-      const errorConv: Conversation = {
-        ...updatedConv,
-        messages: [...updatedConv.messages, errorMessage],
-      };
-
-      updateConversation(errorConv);
-      setConversations((prev) =>
-        prev.map((c) => (c.id === convId ? errorConv : c))
-      );
-    } finally {
-      setIsGenerating(false);
-      setStreamingContent('');
+    for (let i = 0; i < responseText.length; i += charsPerTick) {
+      currentText = responseText.slice(0, i + charsPerTick);
+      setStreamingContent(currentText);
+      await new Promise(resolve => setTimeout(resolve, tickDelay));
     }
-  }, [currentConversationId, currentConversation, isGenerating, settings]);
+
+    // Small delay before finalizing
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Add assistant message
+    const assistantMessage: Message = {
+      id: generateId(),
+      role: 'assistant',
+      content: responseText,
+      timestamp: Date.now(),
+    };
+
+    const finalConv: Conversation = {
+      ...updatedConv,
+      messages: [...updatedConv.messages, assistantMessage],
+    };
+
+    updateConversation(finalConv);
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? finalConv : c))
+    );
+
+    // Update suggestions
+    setCurrentSuggestions(chatbotResponse.suggestions);
+
+    setIsGenerating(false);
+    setStreamingContent('');
+  }, [currentConversationId, currentConversation, isGenerating, hasShownFirstChat]);
 
   // Don't render until mounted (to avoid hydration mismatch with localStorage)
   if (!mounted) {
@@ -456,6 +522,29 @@ export default function Home() {
               )}
             </div>
           </div>
+
+          {/* Suggestion Buttons - Old School Chatbot Style */}
+          {currentSuggestions.length > 0 && !isGenerating && (
+            <div className="jr-suggestions-panel">
+              <div className="jr-suggestions-header">
+                <span className="jr-suggestions-icon">💡</span>
+                Quick Options / クイック選択
+                <span className="jr-suggestions-hint">(Click to send)</span>
+              </div>
+              <div className="jr-suggestions-buttons">
+                {currentSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    className="jr-suggestion-btn"
+                    onClick={() => handleSendMessage(suggestion)}
+                  >
+                    <span className="jr-suggestion-number">{index + 1}</span>
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="jr-input-panel">
             <div className="jr-input-panel-header small">
@@ -696,6 +785,78 @@ export default function Home() {
             </p>
           </div>
         </JRPopup>
+      )}
+
+      {/* Cookie Banner */}
+      {showCookieBanner && (
+        <div className="jr-cookie-banner">
+          <div className="jr-cookie-content">
+            <div className="jr-cookie-icon">🍪</div>
+            <div className="jr-cookie-text">
+              <strong>Cookie使用のお知らせ / Cookie Notice</strong>
+              <p>
+                当サイトでは、サービス向上およびユーザー体験の最適化のためにCookieを使用しています。
+                Cookieにはセッション管理、ユーザー設定の保存、アクセス解析などの目的で使用される情報が含まれます。
+                本サイトのご利用を継続されることで、当社のCookieポリシーに同意いただいたものとみなされます。
+              </p>
+              <p className="jr-cookie-small">
+                詳細は<a href="#" onClick={(e) => e.preventDefault()}>プライバシーポリシー</a>および
+                <a href="#" onClick={(e) => e.preventDefault()}>Cookie設定</a>をご確認ください。
+              </p>
+            </div>
+            <div className="jr-cookie-actions">
+              <button className="jr-cookie-btn primary" onClick={() => setShowCookieBanner(false)}>
+                すべて許可
+              </button>
+              <button className="jr-cookie-btn secondary" onClick={() => setShowCookieBanner(false)}>
+                必須のみ
+              </button>
+              <button className="jr-cookie-btn link" onClick={() => alert('Cookie設定画面は準備中です。')}>
+                詳細設定
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Password Saver Panel */}
+      {showPasswordSaver && (
+        <div className="jr-password-saver">
+          <div className="jr-password-saver-header">
+            <span className="jr-password-saver-icon">🔐</span>
+            <span className="jr-password-saver-title">パスワードを保存しますか？</span>
+            <button className="jr-password-saver-close" onClick={() => setShowPasswordSaver(false)}>✕</button>
+          </div>
+          <div className="jr-password-saver-content">
+            <div className="jr-password-saver-site">
+              <div className="jr-password-saver-favicon">HC</div>
+              <div className="jr-password-saver-details">
+                <div className="jr-password-saver-url">hyper-chat.local</div>
+                <div className="jr-password-saver-user">claude</div>
+              </div>
+            </div>
+            <div className="jr-password-saver-info">
+              <p>このサイトのログイン情報をブラウザに保存しますか？</p>
+              <p className="jr-password-saver-note">
+                ※ 保存されたパスワードはブラウザのパスワードマネージャーで管理されます
+              </p>
+            </div>
+            <div className="jr-password-saver-actions">
+              <button className="jr-password-saver-btn primary" onClick={() => { alert('パスワードを保存しました（デモ）'); setShowPasswordSaver(false); }}>
+                保存する
+              </button>
+              <button className="jr-password-saver-btn secondary" onClick={() => setShowPasswordSaver(false)}>
+                保存しない
+              </button>
+            </div>
+            <div className="jr-password-saver-footer">
+              <label className="jr-password-saver-checkbox">
+                <input type="checkbox" />
+                <span>このサイトでは今後表示しない</span>
+              </label>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

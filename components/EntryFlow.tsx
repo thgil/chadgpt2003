@@ -314,7 +314,6 @@ export default function EntryFlow({ onComplete }: EntryFlowProps) {
       return;
     }
     if (username.toLowerCase() === 'claude' && password.toLowerCase() === 'claude') {
-      sessionStorage.setItem('hyper-chat-logged-in', 'true');
       setStep('complete');
       setTimeout(onComplete, 800);
     } else {
